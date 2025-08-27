@@ -1,7 +1,5 @@
-import { ChangeEvent, memo, useContext } from "react";
-import { useState } from "react";
+import { ChangeEvent, memo, useState } from "react";
 import { Controller, RegisterOptions } from "react-hook-form";
-
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import {
@@ -23,7 +21,7 @@ type CustomFormFieldType = {
   name: string;
   fieldProps: TextFieldProps;
   rules: RegisterOptions;
-  element: "input" | "autocomplete" 
+  element: "input" | "autocomplete";
 };
 
 export type CustomAutocompleteType = CustomFormFieldType & {
@@ -35,21 +33,15 @@ export type CustomAutocompleteType = CustomFormFieldType & {
   >;
 };
 
-
-
-
-
 export type TextFieldType = Omit<CustomFormFieldType, "control">;
 export type AutocompleteType = Omit<
   CustomAutocompleteType,
   "control" | "options"
 >;
 
-
-
-export type PropType = CustomFormFieldType| CustomAutocompleteType
+export type PropType = CustomFormFieldType | CustomAutocompleteType;
 export const maxStringSize = 254;
-const types = ["text", "password", "email", "number"]; // Define valid input types
+const types = ["text", "password", "email", "number"];
 
 const CustomFormField = memo((props: PropType) => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -60,12 +52,12 @@ const CustomFormField = memo((props: PropType) => {
     <Controller
       control={control}
       name={name}
-      rules={{...rules,maxLength: fieldProps?.InputProps?.inputProps?.maxLength || maxStringSize}}
+      rules={{ ...rules, maxLength: fieldProps?.InputProps?.inputProps?.maxLength || maxStringSize }}
       render={({
         field: { ref, onChange, value = null, ...field },
         fieldState: { error },
       }) => {
-        if (element == "input") {
+        if (element === "input") {
           return (
             <TextField
               {...fieldProps}
@@ -95,29 +87,61 @@ const CustomFormField = memo((props: PropType) => {
                   fieldProps.type === "password" ? (
                     <IconButton onClick={() => setShowPassword(!showPassword)}>
                       {showPassword ? (
-                        <VisibilityOffIcon />
+                        <VisibilityOffIcon fontSize="small" />
                       ) : (
-                        <VisibilityIcon />
+                        <VisibilityIcon fontSize="small" />
                       )}
                     </IconButton>
                   ) : (
                     fieldProps.InputProps?.endAdornment || <></>
                   ),
                 inputProps: {
-                  maxLength: maxStringSize, // Set the max length here
+                  maxLength: maxStringSize,
                   ...fieldProps.InputProps?.inputProps,
                 },
+                sx: {
+                  height: '40px', // Reduced input height
+                  '& .MuiInputBase-input': {
+                    padding: '8px 12px', // Reduced padding for smaller height
+                    fontSize: '0.875rem', // Smaller font size
+                  },
+                },
               }}
-              InputLabelProps={
-                types.includes(fieldProps.type as string)
+              InputLabelProps={{
+                sx: {
+                  fontSize: '0.875rem', // Smaller label font size
+                  top: '-4px', // Adjust label position for smaller field
+                  '&.Mui-focused, &.MuiFormLabel-filled': {
+                    transform: 'translate(14px, -9px) scale(0.75)', // Adjust label transform
+                  },
+                },
+                ...(types.includes(fieldProps.type as string)
                   ? { shrink: true }
-                  : {}
-              }
+                  : {}),
+              }}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: '8px', // Slightly rounded corners
+                  '& fieldset': {
+                    borderColor: 'gray.300',
+                  },
+                  '&:hover fieldset': {
+                    borderColor: 'gray.500',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: 'blue.500',
+                  },
+                },
+                '& .MuiFormHelperText-root': {
+                  fontSize: '0.75rem', // Smaller helper text
+                  marginTop: '2px',
+                },
+              }}
             />
           );
         }
-     
-        if (element == "autocomplete") {
+
+        if (element === "autocomplete") {
           return (
             <Autocomplete
               {...field}
@@ -132,11 +156,10 @@ const CustomFormField = memo((props: PropType) => {
                 <TextField
                   inputRef={ref}
                   {...params}
-                  {...field}
                   {...fieldProps}
                   label={
                     <span className={textColorClass}>
-                      {fieldProps.label}{" "}
+                      {fieldProps.label}
                       {rules.required && (
                         <span className="text-red-500">*</span>
                       )}
@@ -144,6 +167,43 @@ const CustomFormField = memo((props: PropType) => {
                   }
                   error={!!error}
                   helperText={error?.message || ""}
+                  InputProps={{
+                    ...params.InputProps,
+                    sx: {
+                      height: '40px', // Reduced input height
+                      '& .MuiInputBase-input': {
+                        padding: '8px 12px', // Reduced padding
+                        fontSize: '0.875rem', // Smaller font size
+                      },
+                    },
+                  }}
+                  InputLabelProps={{
+                    sx: {
+                      fontSize: '0.875rem', // Smaller label font size
+                      top: '-4px',
+                      '&.Mui-focused, &.MuiFormLabel-filled': {
+                        transform: 'translate(14px, -9px) scale(0.75)',
+                      },
+                    },
+                  }}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: '8px',
+                      '& fieldset': {
+                        borderColor: 'gray.300',
+                      },
+                      '&:hover fieldset': {
+                        borderColor: 'gray.500',
+                      },
+                      '&.Mui-focused fieldset': {
+                        borderColor: 'blue.500',
+                      },
+                    },
+                    '& .MuiFormHelperText-root': {
+                      fontSize: '0.75rem',
+                      marginTop: '2px',
+                    },
+                  }}
                 />
               )}
             />

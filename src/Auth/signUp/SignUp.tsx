@@ -1,19 +1,36 @@
-import { Button } from "@mui/material";
+import { Button, CircularProgress } from "@mui/material";
 import { useForm } from "react-hook-form";
-import { CustomFormField } from "../uitilities/CustomComponents/Customformfields";
+import { CustomFormField } from "../../uitilities/CustomComponents/Customformfields";
 import { useNavigate } from "react-router-dom";
+import { useMutation } from "react-query";
+import { createUserService } from "../signUp/service";
+import { useNotification } from "../../notification/context";
 
 function SignUp() {
   const {
     control,
     handleSubmit,
     reset,
-  } = useForm();
+  } = useForm<{ name: string; password: string; email: string }>();
+  const {showNotification}=useNotification()
   const navigate=useNavigate()
+  const {mutate:signUp,isLoading}=useMutation(createUserService,{
+    onSuccess:()=>{
+      showNotification("user registerd succesfully","success")
+      reset({
+        name:"",
+        email:"",
+        password:""
+      })
+     navigate("/login");
+    },
+    onError:()=>{
+       showNotification("user registraion failed","error")
+    }
+  })
 
-  const onSubmit = (data) => {
-    alert(`Sign up successful! (This is a demo)\nName: ${data.name}\nEmail: ${data.email}`);
-    reset();
+  const onSubmit = (data:{name:string,password:string,email:string}) => {
+    signUp(data)
   };
 
   return (
@@ -77,6 +94,7 @@ function SignUp() {
             variant="contained"
             fullWidth
             className="!bg-green-500 !text-white !rounded-lg !py-2 hover:!bg-green-600 transition"
+            endIcon={isLoading && < CircularProgress size={20} color="inherit"/>}
           >
             Sign Up
           </Button>
