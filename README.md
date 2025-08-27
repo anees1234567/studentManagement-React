@@ -14,12 +14,12 @@
 
  **Clone the repository**
 
-git clone https://github.com/anees1234567/studentManagement-React.git
-cd studentManagement-React
-git checkout branch-studentDetailsEdit
+- git clone https://github.com/anees1234567/studentManagement-React.git
+- cd studentManagement-React
+- git checkout branch-studentDetailsEdit
 
 **Install dependencies**
-npm install
+- npm install
 **Run the Developmet Server **
-npm run dev
+- npm run dev
 
